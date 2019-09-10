@@ -149,12 +149,21 @@ namespace Owin
                 if (!string.IsNullOrWhiteSpace(options.IssuerName) &&
                     options.SigningCertificate != null)
                 {
+                    // IdSrv3 hard-codes the value when issuing a token using the pattern below
+                    var audience = options.IssuerName.EnsureTrailingSlash() + "resources";
+
+                    // Use the configured values if present, otherwise fallback to the defaulted value
+                    List<string> validAudiences;
+                    if (options.ValidAudiences != null && options.ValidAudiences.Count() > 0)
+                      validAudiences = new List<string>(options.ValidAudiences);
+                    else
+                      validAudiences = new List<string>() { audience };
 
                     var valParams = new TokenValidationParameters
                     {
                         ValidIssuer = options.IssuerName,
-                        ValidAudiences = options.ValidAudiences,
-                        ValidateAudience = (options.ValidAudiences != null) ? options.ValidAudiences.Count() > 0 : false,
+                        ValidAudiences = validAudiences,
+                        ValidateAudience = true,
                         IssuerSigningKey = new X509SecurityKey(options.SigningCertificate),
                         NameClaimType = options.NameClaimType,
                         RoleClaimType = options.RoleClaimType,
@@ -178,10 +187,18 @@ namespace Owin
                         options,
                         loggerFactory);
 
+                    // Use the configured values if present, otherwise fallback to the discovery document's value
+                    // (which is actually hard-coded to _issuer + "/resources")
+                    List<string> validAudiences;
+                    if (options.ValidAudiences != null && options.ValidAudiences.Count() > 0)
+                      validAudiences = new List<string>(options.ValidAudiences);
+                    else
+                      validAudiences = new List<string>() { issuerProvider.Audience };
+
                     var valParams = new TokenValidationParameters
                     {
-                        ValidAudiences = options.ValidAudiences,
-                        ValidateAudience = (options.ValidAudiences != null) ? options.ValidAudiences.Count() > 0 : false,
+                        ValidAudiences = validAudiences,
+                        ValidateAudience = true,
                         NameClaimType = options.NameClaimType,
                         RoleClaimType = options.RoleClaimType
                     };
