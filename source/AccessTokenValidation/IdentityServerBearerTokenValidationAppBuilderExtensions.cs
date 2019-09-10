@@ -149,13 +149,12 @@ namespace Owin
                 if (!string.IsNullOrWhiteSpace(options.IssuerName) &&
                     options.SigningCertificate != null)
                 {
-                    var audience = options.IssuerName.EnsureTrailingSlash();
-                    audience += "resources";
 
                     var valParams = new TokenValidationParameters
                     {
                         ValidIssuer = options.IssuerName,
-                        ValidAudience = audience,
+                        ValidAudiences = options.ValidAudiences,
+                        ValidateAudience = (options.ValidAudiences != null) ? options.ValidAudiences.Count() > 0 : false,
                         IssuerSigningKey = new X509SecurityKey(options.SigningCertificate),
                         NameClaimType = options.NameClaimType,
                         RoleClaimType = options.RoleClaimType,
@@ -181,7 +180,8 @@ namespace Owin
 
                     var valParams = new TokenValidationParameters
                     {
-                        ValidAudience = issuerProvider.Audience,
+                        ValidAudiences = options.ValidAudiences,
+                        ValidateAudience = (options.ValidAudiences != null) ? options.ValidAudiences.Count() > 0 : false,
                         NameClaimType = options.NameClaimType,
                         RoleClaimType = options.RoleClaimType
                     };

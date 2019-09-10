@@ -93,7 +93,7 @@ namespace IdentityServer3.AccessTokenValidation
         /// <value>
         /// The backchannel HTTP handler.
         /// </value>
-		public HttpMessageHandler BackchannelHttpHandler { get; set; }
+        public HttpMessageHandler BackchannelHttpHandler { get; set; }
 
         /// <summary>
         /// Gets or sets the backchannel certificate validator.
@@ -191,7 +191,7 @@ namespace IdentityServer3.AccessTokenValidation
         /// <value>
         /// The introspection HTTP handler.
         /// </value>
-		public HttpMessageHandler IntrospectionHttpHandler { get; set; }
+        public HttpMessageHandler IntrospectionHttpHandler { get; set; }
 
         /// <summary>
         /// Indicates whether the discovery metadata sync to be delayed during the construction of
@@ -215,5 +215,13 @@ namespace IdentityServer3.AccessTokenValidation
         /// Default is 1 day.
         /// </summary>
         public TimeSpan AutomaticRefreshInterval { get; set; }
-    }
+
+        /// <summary>
+        /// Gets or sets the valid audiences.
+        /// </summary>
+        /// <value>
+        /// The valid audiences.
+        /// </value>
+        public IEnumerable<string> ValidAudiences { get; set; }
+  }
 }
